@@ -68,6 +68,8 @@ Durante a jornada, o jogador pode coletar **power-ups** que garantem vantagens t
 - Python 3.8 ou superior
 - Pygame 2.x
 
-## Criador do projeto 
+## Equipe do Projeto
 
-Kaio Lucas | <img src="https://github.com/kaiolucass.png" height="75" width="75"> |
+| nome | foto |
+| -------- | -------- |
+| Kaio Lucas | <img src="https://github.com/kaiolucass.png" height="75" width="75"> |
