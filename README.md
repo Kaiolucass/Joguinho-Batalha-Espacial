@@ -68,7 +68,7 @@ Durante a jornada, o jogador pode coletar **power-ups** que garantem vantagens t
 - Python 3.8 ou superior
 - Pygame 2.x
 
-## Equipe do Projeto
+## Criador do Projeto
 
 | nome | foto |
 | -------- | -------- |
