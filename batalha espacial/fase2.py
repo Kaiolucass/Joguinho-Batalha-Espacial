@@ -26,6 +26,8 @@ class Fase2:
         self.spawn_powerup_timer = 0
         self.pontos = 0
         self.gameover = False
+        self.level_up = False
+
 
         # som de tiro
         self.shoot_sound = pygame.mixer.Sound("data/alienshoot1.wav")

@@ -1,4 +1,5 @@
 import pygame
+from fase2 import Fase2
 from nave import Nave
 from asteroide import Asteroide
 from tiro import Tiro
@@ -77,25 +78,22 @@ class Fase1:
         pygame.mixer.music.load("data/b423b42.wav")
         pygame.mixer.music.play(-1)
 
-        self.spawn_levelup_timer = 0 #para spawnar o level up
-    
+        self.spawn_levelup_timer = 0
+
     def eventos(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and not self.gameover:
                 self.shoot_sound.play()
-                # Primeiro tiro
                 tiro1 = Tiro(self.objectGroup, self.tiroGroup)
                 tiro1.rect.centerx = self.nave.rect.centerx
                 tiro1.rect.top = self.nave.rect.top
 
                 if self.tiro_duplo:
-                    # Segundo tiro ao lado
                     tiro2 = Tiro(self.objectGroup, self.tiroGroup)
                     tiro2.rect.centerx = self.nave.rect.centerx + 20
                     tiro2.rect.top = self.nave.rect.top
             elif event.key == pygame.K_RETURN and self.gameover:
                 self.reset()
-
 
     def fundo(self):
         bg = pygame.sprite.Sprite(self.objectGroup)
@@ -118,6 +116,10 @@ class Fase1:
         self.asteroides_congelados = False
         self.gameover = False
 
+    def mudar_fase(self):
+        self.levelup = True
+        self.fase2 = Fase2(self.tela)
+        self.fase2.update()
 
     def update(self):
         if self.gameover:
@@ -125,19 +127,16 @@ class Fase1:
 
         self.objectGroup.update()
 
-        # Só atualiza asteroides se não estiverem congelados
         if not self.asteroides_congelados:
             self.asteroideGroup.update()
 
         self.powerupGroup.update()
 
-        # Colisão entre tiros e asteroides
         colisoes = pygame.sprite.groupcollide(
             self.tiroGroup, self.asteroideGroup, True, True, pygame.sprite.collide_mask
         )
         self.pontos += len(colisoes)
 
-        # Criar novos asteroides
         if not self.asteroides_congelados:
             self.timer += 1
             if self.timer > 20:
@@ -145,44 +144,35 @@ class Fase1:
                 if random.random() < 0.5:
                     Asteroide(self.objectGroup, self.asteroideGroup)
 
-        # Timer para efeito de congelar
         if self.asteroides_congelados:
             self.congelar_timer -= 1
             if self.congelar_timer <= 0:
                 self.asteroides_congelados = False
 
-        # Spawn de powerups
         self.spawn_powerup_timer += 1
         if self.spawn_powerup_timer > 300:
             self.spawn_powerup_timer = 0
             PowerUp(self.objectGroup, self.powerupGroup)
 
-         # Spawn do ícone "Level Up"
         self.spawn_levelup_timer += 1
-        if self.spawn_levelup_timer > 500:  # Modifique este valor para controlar a frequência
+        if self.spawn_levelup_timer > 500:
             self.spawn_levelup_timer = 0
-            LevelUp(self.levelupGroup)  # Criar o ícone de level up
+            LevelUp(self.levelupGroup)
 
-        # Colisão entre a nave e o "Level Up"
         levelup_colisao = pygame.sprite.spritecollide(self.nave, self.levelupGroup, True)
         if levelup_colisao:
-            self.nivel = 1  # Avançar para o próximo nível
-            self.spawn_levelup_timer = 0
+            self.mudar_fase()
 
-        # Colisão nave x asteroides
         colisao_nave_asteroide = pygame.sprite.spritecollide(
             self.nave, self.asteroideGroup, True, pygame.sprite.collide_mask
         )
         if colisao_nave_asteroide:
             if self.escudo_ativo:
-                self.escudo_ativo = False  # Gasta o escudo
+                self.escudo_ativo = False
             else:
                 self.gameover = True
 
-        # Colisão nave x powerups
-        powerup_coletado = pygame.sprite.spritecollide(
-            self.nave, self.powerupGroup, True
-        )
+        powerup_coletado = pygame.sprite.spritecollide(self.nave, self.powerupGroup, True)
         for powerup in powerup_coletado:
             if powerup.tipo == "escudo":
                 self.escudo_ativo = True
@@ -190,14 +180,13 @@ class Fase1:
                 self.tiro_duplo = True
             elif powerup.tipo == "congelar":
                 self.asteroides_congelados = True
-                self.congelar_timer = 180  # 3 segundos (60 FPS)
-
+                self.congelar_timer = 180
 
     def desenhar(self):
         self.tela.fill((0, 0, 0))
         self.objectGroup.draw(self.tela)
         self.powerupGroup.draw(self.tela)
-        self.levelupGroup.draw(self.tela) 
+        self.levelupGroup.draw(self.tela)
 
         fonte = pygame.font.SysFont("Comic Sans MS", 24)
         texto_pontos = fonte.render(f"Pontos: {self.pontos}", True, (255, 255, 255))
@@ -214,13 +203,12 @@ class Fase1:
         if self.asteroides_congelados:
             texto_congelar = fonte.render("ASTEROIDES CONGELADOS", True, (0, 200, 255))
             self.tela.blit(texto_congelar, (10, 100))
-     
+
         if self.levelup:
             fonte = pygame.font.SysFont("Comic Sans MS", 36)
             render = fonte.render("LEVEL UP!", True, (255, 255, 0))
             rect = render.get_rect(center=(420, 240))
             self.tela.blit(render, rect)
-
 
         if self.gameover:
             fonte_gameover = pygame.font.SysFont("Comic Sans MS", 36)
