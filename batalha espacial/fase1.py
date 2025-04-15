@@ -14,16 +14,18 @@ pygame.display.set_caption("Batalha Espacial 👽")
 
 clock = pygame.time.Clock()
 
-
-def tela_inicio():
+def tela_inicio(melhor_pontuacao=0):
     fundo = pygame.image.load("data/imagem-fundo.png").convert()
     pygame.mixer.music.load("data/b423b42.wav")
     pygame.mixer.music.play(-1)
 
     fonte_titulo = pygame.font.SysFont("Comic Sans MS", 64)
     fonte_texto = pygame.font.SysFont("Comic Sans MS", 32)
+    fonte_menor = pygame.font.SysFont("Comic Sans MS", 24)
+
     titulo = fonte_titulo.render("Batalha Espacial", True, (0, 255, 0))
     texto = fonte_texto.render("Pressione ENTER para começar", True, (255, 255, 255))
+    highscore = fonte_menor.render(f"Melhor pontuação: {melhor_pontuacao}", True, (255, 255, 255))
 
     nave_img = pygame.image.load("data/nave.png").convert_alpha()
     x_nave = -100
@@ -48,6 +50,7 @@ def tela_inicio():
 
         tela.blit(titulo, titulo.get_rect(center=(420, 150)))
         tela.blit(texto, texto.get_rect(center=(420, 300)))
+        tela.blit(highscore, highscore.get_rect(center=(420, 360)))
 
         pygame.display.update()
         clock.tick(60)
@@ -92,8 +95,6 @@ class Fase1:
                     tiro2 = Tiro(self.objectGroup, self.tiroGroup)
                     tiro2.rect.centerx = self.nave.rect.centerx + 20
                     tiro2.rect.top = self.nave.rect.top
-            elif event.key == pygame.K_RETURN and self.gameover:
-                self.reset()
 
     def fundo(self):
         bg = pygame.sprite.Sprite(self.objectGroup)
@@ -118,7 +119,7 @@ class Fase1:
 
     def mudar_fase(self):
         self.levelup = True
-        self.fase2 = Fase2(self.tela)
+        self.fase2 = Fase2(self.tela, self.pontos)
         self.fase2.update()
 
     def update(self):
@@ -212,7 +213,7 @@ class Fase1:
 
         if self.gameover:
             fonte_gameover = pygame.font.SysFont("Comic Sans MS", 36)
-            texto = fonte_gameover.render("Game Over - Aperte Enter", True, (255, 0, 0))
-            self.tela.blit(texto, (220, 200))
+            texto = fonte_gameover.render("GAME OVER", True, (255, 0, 0))
+            self.tela.blit(texto, (220, 220))
 
         pygame.display.update()

@@ -6,7 +6,7 @@ import pygame, random
 
 
 class Fase2:
-    def __init__(self, tela):
+    def __init__(self, tela, pontos):
         self.tela = tela
         self.objectGroup = pygame.sprite.Group()
         self.tiroGroup = pygame.sprite.Group()
@@ -24,7 +24,7 @@ class Fase2:
         self.congelar_timer = 0
         self.timer = 20
         self.spawn_powerup_timer = 0
-        self.pontos = 0
+        self.pontos = pontos
         self.gameover = False
         self.level_up = False
 
@@ -74,9 +74,6 @@ class Fase2:
                     tiro2 = Tiro(self.objectGroup, self.tiroGroup)
                     tiro2.rect.centerx = self.nave.rect.centerx + 20
                     tiro2.rect.top = self.nave.rect.top
-
-            elif event.key == pygame.K_RETURN and self.gameover:
-                self.reset()
 
     def update(self):
         if self.gameover:
@@ -181,7 +178,7 @@ class Fase2:
 
         if self.gameover:
             fonte_gameover = pygame.font.SysFont("Comic Sans MS", 36)
-            texto = fonte_gameover.render("Game Over - Aperte Enter", True, (255, 0, 0))
+            texto = fonte_gameover.render("GAME OVER", True, (255, 0, 0))
             self.tela.blit(texto, (220, 200))
 
         pygame.display.update()

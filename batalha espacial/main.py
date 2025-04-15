@@ -9,44 +9,51 @@ pygame.init()
 tela = pygame.display.set_mode([840, 480])
 pygame.display.set_caption("Batalha espacial👽")
 
-# Tela inicial
-tela_inicio()
-
-# Inicializando a fase 1
-fase_atual = Fase1(tela)
-
 # Clock para controlar o FPS do jogo
 clock = pygame.time.Clock()
+
+# Melhor pontuação inicial
+melhor_pontuacao = 0
 
 # Função para mostrar transição de fase
 def mostrar_transicao(texto):
     fonte = pygame.font.SysFont("Comic Sans MS", 48)
     render = fonte.render(texto, True, (255, 255, 0))
     rect = render.get_rect(center=(420, 240))
-
-    tela.fill((0, 0, 0))  # Tela preta
-    tela.blit(render, rect)  # Exibe o texto
+    tela.fill((0, 0, 0))
+    tela.blit(render, rect)
     pygame.display.update()
-    pygame.time.delay(2000)  # Espera 2 segundos
+    pygame.time.delay(2000)
 
 # Loop principal do jogo
-gameLoop = True
-while gameLoop:
-    clock.tick(60)
+while True:
+    # Tela inicial (só continua quando apertar ENTER)
+    tela_inicio(melhor_pontuacao)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            gameLoop = False
-        else:
+    # Começa a fase 1
+    fase_atual = Fase1(tela)
+
+    while True:
+        clock.tick(60)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
             fase_atual.eventos(event)
 
-    fase_atual.update()
-    fase_atual.desenhar()
+        fase_atual.update()
+        fase_atual.desenhar()
+        pygame.display.update()
 
-    # Checa se a fase 1 terminou e muda para a fase 2
-    if isinstance(fase_atual, Fase1) and fase_atual.levelup:
-        mostrar_transicao("Fase 2")
-        fase_atual = Fase2(tela)
+        # Verifica se deu game over
+        if hasattr(fase_atual, "gameover") and fase_atual.gameover:
+            if fase_atual.pontos > melhor_pontuacao:
+                melhor_pontuacao = fase_atual.pontos
+            pygame.time.delay(1500)
+            break  # Sai do loop da fase e volta pra tela inicial
 
-# Encerra o Pygame
-pygame.quit()
+        # Transição da fase 1 para fase 2
+        if isinstance(fase_atual, Fase1) and fase_atual.levelup:
+            mostrar_transicao("Fase 2")
+            fase_atual = Fase2(tela, fase_atual.pontos)
