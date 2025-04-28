@@ -44,8 +44,10 @@ Durante a jornada, o jogador pode coletar **power-ups** que garantem vantagens t
 ---
 
 ## 📷 Capturas de Tela
+![Tela-Inicio](https://github.com/user-attachments/assets/bf11eee5-7028-4070-bd8e-eeb1ff5538a7)
 
-> (Adicione aqui screenshots do jogo rodando, por exemplo: `docs/images/fase1.png`, `fase2.png`, etc.)
+![Fase1](https://github.com/user-attachments/assets/1d7befd0-056e-4348-aad2-f0fc1279bce0)![Fase2](https://github.com/user-attachments/assets/cb0ce976-7e97-44d1-b623-480a86ec8417)
+
 
 ---
 
